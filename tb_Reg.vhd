@@ -10,6 +10,7 @@ end tb_Reg;
 architecture test of tb_Reg is
 	signal c:	std_logic:='0';
 	signal d: 	std_logic_vector(31 downto 0):=(others=>'0');
+	signal endsim: std_logic:='0';
 	component Reg
 	port(
 		clk:	in std_logic;
