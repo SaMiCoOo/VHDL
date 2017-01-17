@@ -1,6 +1,5 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
-use work.helper.all;
 
 entity tb_read_mux is
 end tb_read_mux;
