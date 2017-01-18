@@ -62,7 +62,7 @@ architecture behavior of REG_FILE is
 
 
 begin
-	AndGates : for i in 15 to 0 generate
+	AndGates : for i in 0 to 15 generate
 		AndX: andGate port map(clk,e(i),RegWrite,c(i));
 	end generate ; -- AndGates
 

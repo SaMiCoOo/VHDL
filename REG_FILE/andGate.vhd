@@ -14,7 +14,7 @@ end entity ; -- andGate
 architecture arch of andGate is
 
 begin
-	always : process
+	always : process(clk,en,we)
 	begin
 		o <= clk and en and we;
 	end process ; -- always
