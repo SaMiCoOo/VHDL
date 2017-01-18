@@ -3,7 +3,7 @@ use IEEE.std_logic_1164.all;
 
 entity tb_DFF is
 	port(
-		q,notQ:	out std_logic
+		q:	out std_logic
 	);
 end tb_DFF;
 
@@ -13,13 +13,13 @@ architecture test of tb_DFF is
 	port(
 		D:	in std_logic;
 		clk:	in std_logic;
-		Q,NQ:	out std_logic
+		Q:	out std_logic
 	);
 	end component;
 
 
 begin
-	D1: DFF port map(d,c,q,notQ);
+	D1: DFF port map(d,c,q);
 
 	process begin
 		wait for 10 ns;

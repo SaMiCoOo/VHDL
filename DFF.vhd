@@ -5,7 +5,7 @@ entity DFF is
 	port(
 		D:	in std_logic;
 		clk:	in std_logic;
-		Q,NQ:	out std_logic
+		Q:	out std_logic
 	);
 end DFF;
 
@@ -15,7 +15,6 @@ begin
 	begin
 		if(clk'event and clk='1') then
 			Q <= D;
-			NQ <= not D;
 		end if;
 	end process;
 end behavior;
