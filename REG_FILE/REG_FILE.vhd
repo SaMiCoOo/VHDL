@@ -61,7 +61,8 @@ begin
 	AndGatesGenerator : for i in 0 to 31 generate
 		AndX: andGate port map(clk,e(i),RegWrite,c(i));
 	end generate ; -- AndGatesGenerator
-	RegistersGenerator : for i in 0 to 31 generate
+	ZeroRegister: Reg port map('1',(others=>'0'),R(0));
+	RegistersGenerator : for i in 1 to 31 generate
 		RegX: Reg port map(c(i),WriteData,R(i));
 	end generate ; -- RegistersGenerator
 
