@@ -7,7 +7,7 @@ entity REG_FILE is
 	clk,RegWrite:	in std_logic;
 	ReadRegister1,
 	ReadRegister2,
-	WriteRegister:	in std_logic_vector(3 downto 0);
+	WriteRegister:	in std_logic_vector(4 downto 0);
 	WriteData:		in std_logic_vector(31 downto 0);
 	ReadData1,
 	ReadData2:		out std_logic_vector(31 downto 0)
@@ -18,20 +18,19 @@ architecture behavior of REG_FILE is
 	
 	component write_decoder
 		port(
-			i:	in std_logic_vector(3 downto 0);
-			o0,o1,o2,o3,
-			o4,o5,o6,o7,
-			o8,o9,o10,o11,
-			o12,o13,o14,o15:	out std_logic
+			i:	in std_logic_vector(4 downto 0);
+			o:	out std_logic_vector(31 downto 0)
 		);
 	end component;
 
 	component read_mux
 	port(
-		s:	in std_logic_vector(3 downto 0);
+		s:	in std_logic_vector(4 downto 0);
 		o:	out std_logic_vector(31 downto 0);
 		i0,i1,i2,i3,i4,i5,i6,i7,
-		i8,i9,i10,i11,i12,i13,i14,i15:	in std_logic_vector(31 downto 0)
+		i8,i9,i10,i11,i12,i13,i14,i15,
+		i16,i17,i18,i19,i20,i21,i22,i23,
+		i24,i25,i26,i27,i28,i29,i30,i31:	in std_logic_vector(31 downto 0)
 	);
 	end component;
 
@@ -52,59 +51,37 @@ architecture behavior of REG_FILE is
 	);
 	end component;
 
-	signal e: std_logic_vector(15 downto 0);
-	signal c: std_logic_vector(15 downto 0);
-	signal 
-		R15,R14,R13,R12,
-		R11,R10,R9,R8,
-		R7,R6,R5,R4,
-		R3,R2,R1,R0 :	std_logic_vector(31 downto 0);
+	signal e: std_logic_vector(31 downto 0);
+	signal c: std_logic_vector(31 downto 0);
+	type registers is array (0 to 31) of std_logic_vector(31 downto 0) ;
+	signal R: registers;
 
 
 begin
-	AndGates : for i in 0 to 15 generate
+	AndGatesGenerator : for i in 0 to 31 generate
 		AndX: andGate port map(clk,e(i),RegWrite,c(i));
-	end generate ; -- AndGates
+	end generate ; -- AndGatesGenerator
+	RegistersGenerator : for i in 0 to 31 generate
+		RegX: Reg port map(c(i),WriteData,R(i));
+	end generate ; -- RegistersGenerator
 
-	REG0: Reg port map(c(0),WriteData,R0);
-	REG1: Reg port map(c(1),WriteData,R1);
-	REG2: Reg port map(c(2),WriteData,R2);
-	REG3: Reg port map(c(3),WriteData,R3);
-	REG4: Reg port map(c(4),WriteData,R4);
-	REG5: Reg port map(c(5),WriteData,R5);
-	REG6: Reg port map(c(6),WriteData,R6);
-	REG7: Reg port map(c(7),WriteData,R7);
-	REG8: Reg port map(c(8),WriteData,R8);
-	REG9: Reg port map(c(9),WriteData,R9);
-	REG10: Reg port map(c(10),WriteData,R10);
-	REG11: Reg port map(c(11),WriteData,R11);
-	REG12: Reg port map(c(12),WriteData,R12);
-	REG13: Reg port map(c(13),WriteData,R13);
-	REG14: Reg port map(c(14),WriteData,R14);
-	REG15: Reg port map(c(15),WriteData,R15);
+	WriteDecoder_0_15: write_decoder port map(WriteRegister,e);
 
-	WriteDecoder: write_decoder port map(
-		WriteRegister,
-		e(15),e(14),e(13),e(12),
-		e(11),e(10),e(9),e(8),
-		e(7),e(6),e(5),e(4),
-		e(3),e(2),e(1),e(0)
-		);
 	ReadMultiplexer1: read_mux port map(
 		ReadRegister1,
 		ReadData1,
-		R15,R14,R13,R12,
-		R11,R10,R9,R8,
-		R7,R6,R5,R4,
-		R3,R2,R1,R0
+		R(0),R(1),R(2),R(3),R(4),R(5),R(6),R(7),
+		R(8),R(9),R(10),R(11),R(12),R(13),R(14),R(15),
+		R(16),R(17),R(18),R(19),R(20),R(21),R(22),R(23),
+		R(24),R(25),R(26),R(27),R(28),R(29),R(30),R(31)
 		);
 	ReadMultiplexer2: read_mux port map(
-		ReadRegister2,
-		ReadData2,
-		R15,R14,R13,R12,
-		R11,R10,R9,R8,
-		R7,R6,R5,R4,
-		R3,R2,R1,R0
+		ReadRegister1,
+		ReadData1,
+		R(0),R(1),R(2),R(3),R(4),R(5),R(6),R(7),
+		R(8),R(9),R(10),R(11),R(12),R(13),R(14),R(15),
+		R(16),R(17),R(18),R(19),R(20),R(21),R(22),R(23),
+		R(24),R(25),R(26),R(27),R(28),R(29),R(30),R(31)
 		);
 
 
