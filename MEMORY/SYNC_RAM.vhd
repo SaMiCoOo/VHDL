@@ -4,11 +4,11 @@ use IEEE.Numeric_Std.all;
 
 entity sync_ram is
   port (
-    clock   : in  std_logic;
-    MemWrite      : in  std_logic;
-    Address : in  std_logic_vector(31 downto 0);
-    WriteData  : in  std_logic_vector(31 downto 0);
-    ReadData : out std_logic_vector(31 downto 0)
+    clock:		in  std_logic;
+    MemWrite:   in  std_logic;
+    Address:	in  std_logic_vector(31 downto 0);
+    WriteData:	in  std_logic_vector(31 downto 0);
+    ReadData:	out std_logic_vector(31 downto 0)
   );
 end entity sync_ram;
 
