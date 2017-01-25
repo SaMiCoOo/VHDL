@@ -27,8 +27,12 @@ begin
         ram(to_integer(unsigned(Address))) <= WriteData;
       end if;
     end if;
+    if to_integer(unsigned(Address)) < 1024 then
+      ReadData <= ram(to_integer(unsigned(Address)));
+      else
+      ReadData <= (others=>'0');
+    end if ;
   end process RamProc;
-
-  ReadData <= ram(to_integer(unsigned(Address)));
+  
 
 end architecture RTL;

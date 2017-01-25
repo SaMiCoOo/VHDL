@@ -136,6 +136,9 @@ end component ; -- andGate
 
   signal alu_control_signals : std_logic_vector(3 downto 0);
 
+  signal zflag : std_logic;
+  signal branchControl : std_logic;
+
 
 begin
   ProgramCounter: Reg port map (clock,branch_address,instruction_address);
@@ -158,13 +161,11 @@ begin
 
   ALUConrolUnit: alu_control port map(ALUOp,funct,alu_control_signals);
 
-  Main_ALU: alu port map(alu_control_signals,ReadData1,Alu_src2,ALU_RESULT,Z,N);
+  Main_ALU: alu port map(alu_control_signals,ReadData1,Alu_src2,ALU_RESULT,zflag,N);
 
   DataMemory: sync_ram port map(clock,MemWrite,ALU_RESULT,ReadData2,MemData);
   MuxMemtoReg: mux port map(MemtoReg,ALU_RESULT,MemData,Write_Data);
 
-
-
-
+  AndBranchZero: andGate port map ('1',Branch,zflag,branchControl);
 
 end architecture ; -- arch
