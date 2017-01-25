@@ -102,6 +102,10 @@ architecture arch of main is
   signal Write_Data: std_logic_vector(31 downto 0);
   signal ReadData1: std_logic_vector(31 downto 0);
   signal ReadData2: std_logic_vector(31 downto 0);
+  signal ext_immediate: std_logic_vector(31 downto 0);
+  signal ALU_RESULT: std_logic_vector(31 downto 0);
+  signal MemData: std_logic_vector(31 downto 0);
+  signal Alu_src2: std_logic_vector(31 downto 0);
 
   alias op_code : std_logic_vector(5 downto 0) is instruction(31 downto 26);
   alias Read_Register_1 : std_logic_vector(4 downto 0) is  instruction(25 downto 21);
@@ -122,6 +126,8 @@ architecture arch of main is
   alias Branch : std_logic is control_signals(2);
   alias ALUOp : std_logic_vector(1 downto 0) is control_signals(1 downto 0);
 
+  signal alu_control_signals : std_logic_vector(3 downto 0);
+
 
 begin
   ProgramCounter: Reg port map (clock,branch_address,instruction_address);
@@ -139,6 +145,15 @@ begin
     ReadData1,ReadData2
   );
   
+  signExtender: sign_extender port map (immediate,ext_immediate);
+  MuxALUsrc: mux port map (ALUsrc,ReadData2,ext_immediate,Alu_src2);
+
+  ALUConrolUnit: alu_control port map(ALUOp,funct,alu_control_signals);
+
+  Main_ALU: alu port map(alu_control_signals,ReadData1,Alu_src2,ALU_RESULT,Z,N);
+
+  DataMemory: sync_ram port map(clock,MemWrite,ALU_RESULT,ReadData2,MemData);
+  MuxMemtoReg: mux port map(MemtoReg,ALU_RESULT,MemData,Write_Data);
 
 
 
