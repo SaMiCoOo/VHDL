@@ -98,6 +98,7 @@ architecture arch of main is
   ) ;
 end component ; -- andGate
 
+  signal branch_address: std_logic_vector(31 downto 0);
   signal instruction_address: std_logic_vector(31 downto 0);
   signal instruction: std_logic_vector(31 downto 0);
   signal Write_Data: std_logic_vector(31 downto 0);
@@ -140,6 +141,7 @@ end component ; -- andGate
 
 
 begin
+  ProgramCounter: Reg port map (clock,branch_address,instruction_address);
   InstructionMemory: sync_ram port map (clock,'0',instruction_address,(others=>'0'),instruction);
 
   ControlUnit: control port map (op_code,control_signals);
@@ -165,7 +167,7 @@ begin
   MuxMemtoReg: mux port map(MemtoReg,ALU_RESULT,MemData,Write_Data);
 
   AndBranchZero: andGate port map (clock,Branch,zflag,branchControl);
-  MuxBranch: mux port map(branchControl,PCplus1,PCplusOffset,instruction_address);
+  MuxBranch: mux port map(branchControl,PCplus1,PCplusOffset,branch_address);
   AdderOffset: full_nadder generic map(32) port map(PCplus1,ext_immediate,'0',tempCout,PCplusOffset);
   AdderOne: full_nadder generic map(32) port map(instruction_address,"00000000000000000000000000000001",'0',tempCout2,PCplus1);
 
