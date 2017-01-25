@@ -133,6 +133,7 @@ end component ; -- andGate
   signal alu_control_signals : std_logic_vector(3 downto 0);
 
   signal zflag : std_logic;
+  signal Nflag : std_logic;
   signal branchControl : std_logic;
 
   signal tempCout : std_logic;
@@ -160,17 +161,27 @@ begin
 
   ALUConrolUnit: alu_control port map(ALUOp,funct,alu_control_signals);
 
-  Main_ALU: alu port map(alu_control_signals,ReadData1,Alu_src2,ALU_RESULT,zflag,N);
+  Main_ALU: alu port map(alu_control_signals,ReadData1,Alu_src2,ALU_RESULT,Z,N);
 
   DataMemory: sync_ram port map(clock,MemWrite,ALU_RESULT,ReadData2,MemData);
   MuxMemtoReg: mux port map(MemtoReg,ALU_RESULT,MemData,Write_Data);
 
-  AndBranchZero: andGate port map ('1',Branch,zflag,branchControl);
+  AndBranchZero: andGate port map (clock,Branch,zflag,branchControl);
   MuxBranch: mux port map(branchControl,PCplus1,PCplusOffset,branch_address);
-
   AdderOffset: full_nadder generic map(32) port map(PCplus1,ext_immediate,'0',tempCout,PCplusOffset);
   AdderOne: full_nadder generic map(32) port map(instruction_address,"00000000000000000000000000000001",'0',tempCout2,PCplus1);
 
+  setFlags : process( ALU_RESULT )
+  begin
+    Nflag <= ALU_RESULT(31);
+    case( ALU_RESULT ) is
+    
+      when "00000000000000000000000000000000" => zflag <='1';
+        
+    
+      when others => zflag<='0';
+    end case ;
+  end process ; -- setFlags
 
 
 
