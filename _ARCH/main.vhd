@@ -62,12 +62,6 @@ architecture arch of main is
       O:  out std_logic_vector(n-1 downto 0)
     );
   end component; -- adder for PC and Branching.
-  component shift_left is
-    port (
-      i:  in std_logic_vector(31 downto 0);
-      o:  out std_logic_vector(31 downto 0)
-    ) ;
-  end component ; -- shift_left
   component sign_extender is
     port(
       sixteen:  in std_logic_vector(15 downto 0);
@@ -114,6 +108,8 @@ end component ; -- andGate
   signal ALU_RESULT: std_logic_vector(31 downto 0);
   signal MemData: std_logic_vector(31 downto 0);
   signal Alu_src2: std_logic_vector(31 downto 0);
+  signal PCplus1: std_logic_vector(31 downto 0);
+  signal PCplusOffset: std_logic_vector(31 downto 0);
 
   alias op_code : std_logic_vector(5 downto 0) is instruction(31 downto 26);
   alias Read_Register_1 : std_logic_vector(4 downto 0) is  instruction(25 downto 21);
@@ -139,10 +135,13 @@ end component ; -- andGate
   signal zflag : std_logic;
   signal branchControl : std_logic;
 
+  signal tempCout : std_logic;
+  signal tempCout2 : std_logic;
+
 
 begin
   ProgramCounter: Reg port map (clock,branch_address,instruction_address);
-  InstructionMemory: sync_ram port map ('1','0',instruction_address,(others=>'0'),instruction);
+  InstructionMemory: sync_ram port map (clock,'0',instruction_address,(others=>'0'),instruction);
 
   ControlUnit: control port map (op_code,control_signals);
 
@@ -167,5 +166,12 @@ begin
   MuxMemtoReg: mux port map(MemtoReg,ALU_RESULT,MemData,Write_Data);
 
   AndBranchZero: andGate port map ('1',Branch,zflag,branchControl);
+  MuxBranch: mux port map(branchControl,PCplus1,PCplusOffset,branch_address);
+
+  AdderOffset: full_nadder generic map(32) port map(PCplus1,ext_immediate,'0',tempCout,PCplusOffset);
+  AdderOne: full_nadder generic map(32) port map(instruction_address,"00000000000000000000000000000001",'0',tempCout2,PCplus1);
+
+
+
 
 end architecture ; -- arch

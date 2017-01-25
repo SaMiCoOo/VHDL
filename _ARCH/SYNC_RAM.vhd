@@ -27,7 +27,7 @@ begin
         ram(to_integer(unsigned(Address))) <= WriteData;
       end if;
     end if;
-    if to_integer(unsigned(Address)) < 1024 then
+    if unsigned(Address) < 1024 then
       ReadData <= ram(to_integer(unsigned(Address)));
       else
       ReadData <= (others=>'0');
