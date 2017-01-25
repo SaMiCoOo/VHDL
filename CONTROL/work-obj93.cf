@@ -1,7 +1,0 @@
-v 3
-file . "tb_control.vhd" "20170124134555.000" "20170124154600.441":
-  entity tb_control at 1( 0) + 0 on 17;
-  architecture arch of tb_control at 11( 182) + 0 on 18;
-file . "control.vhd" "20170124133755.000" "20170124154600.298":
-  entity control at 1( 0) + 0 on 15;
-  architecture arch of control at 12( 219) + 0 on 16;
