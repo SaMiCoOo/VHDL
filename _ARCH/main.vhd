@@ -95,6 +95,14 @@ architecture arch of main is
       Q:  out std_logic_vector(31 downto 0)
     );
   end component; -- PC Register
+  component andGate is
+  port (
+  clk: in std_logic;
+  en: in std_logic;
+  we: in std_logic;
+  o: out std_logic
+  ) ;
+end component ; -- andGate
 
   signal branch_address: std_logic_vector(31 downto 0);
   signal instruction_address: std_logic_vector(31 downto 0);
@@ -154,6 +162,8 @@ begin
 
   DataMemory: sync_ram port map(clock,MemWrite,ALU_RESULT,ReadData2,MemData);
   MuxMemtoReg: mux port map(MemtoReg,ALU_RESULT,MemData,Write_Data);
+
+
 
 
 
