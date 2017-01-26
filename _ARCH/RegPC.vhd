@@ -1,16 +1,16 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 
-entity Reg is
+entity RegPC is
 	port(
 		clk:	in std_logic;
 		D:	in std_logic_vector(31 downto 0);
 		Q:	out std_logic_vector(31 downto 0)
 	);
-end Reg;
+end RegPC;
 
-architecture behavior of Reg is
-	component DFF
+architecture behavior of RegPC is
+	component DFFPC
 	port(
 		clk:	in std_logic;
 		D:	in std_logic;
@@ -20,6 +20,6 @@ architecture behavior of Reg is
 begin
 
 	X: for i in 0 to 31 generate
-		DFFX: DFF port map(clk,D(i),Q(i));
+		DFFX: DFFPC port map(clk,D(i),Q(i));
 	end generate X;
 end behavior;

@@ -89,6 +89,13 @@ architecture arch of main is
       Q:  out std_logic_vector(31 downto 0)
     );
   end component; -- PC Register
+    component RegPC is
+    port(
+      clk:  in std_logic;
+      D:  in std_logic_vector(31 downto 0);
+      Q:  out std_logic_vector(31 downto 0)
+    );
+  end component; -- PC Register
   component andGate is
   port (
   clk: in std_logic;
@@ -141,7 +148,6 @@ end component ; -- andGate
 
 
 begin
-  ProgramCounter: Reg port map (clock,branch_address,instruction_address);
   InstructionMemory: sync_ram port map (clock,'0',instruction_address,(others=>'0'),instruction);
 
   ControlUnit: control port map (op_code,control_signals);
@@ -167,11 +173,12 @@ begin
   MuxMemtoReg: mux port map(MemtoReg,ALU_RESULT,MemData,Write_Data);
 
   AndBranchZero: andGate port map (clock,Branch,zflag,branchControl);
-  MuxBranch: mux port map(branchControl,PCplus1,PCplusOffset,branch_address);
-  AdderOffset: full_nadder generic map(32) port map(PCplus1,ext_immediate,'0',tempCout,PCplusOffset);
+  MuxBranch: mux port map(branchControl, PCplus1, PCplusOffset,branch_address);
+  ProgramCounter: RegPC port map (clock, branch_address, instruction_address);
+  AdderOffset: full_nadder generic map(32) port map(PCplus1, ext_immediate, '0', tempCout,PCplusOffset);
   AdderOne: full_nadder generic map(32) port map(instruction_address,"00000000000000000000000000000001",'0',tempCout2,PCplus1);
 
-  setFlags : process( ALU_RESULT )
+  setFlags : process( ALU_RESULT, clock )
   begin
     Nflag <= ALU_RESULT(31);
     case( ALU_RESULT ) is

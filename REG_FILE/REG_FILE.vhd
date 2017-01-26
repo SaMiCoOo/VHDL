@@ -58,10 +58,11 @@ architecture behavior of REG_FILE is
 
 
 begin
-	AndGatesGenerator : for i in 0 to 31 generate
+	andOfZero: andGate port map(clk,'1','1',c(0));
+	AndGatesGenerator : for i in 1 to 31 generate
 		AndX: andGate port map(clk,e(i),RegWrite,c(i));
 	end generate ; -- AndGatesGenerator
-	ZeroRegister: Reg port map('1',(others=>'0'),R(0));
+	ZeroRegister: Reg port map(c(0),(others=>'0'),R(0));
 	RegistersGenerator : for i in 1 to 31 generate
 		RegX: Reg port map(c(i),WriteData,R(i));
 	end generate ; -- RegistersGenerator
@@ -77,8 +78,8 @@ begin
 		R(24),R(25),R(26),R(27),R(28),R(29),R(30),R(31)
 		);
 	ReadMultiplexer2: read_mux port map(
-		ReadRegister1,
-		ReadData1,
+		ReadRegister2,
+		ReadData2,
 		R(0),R(1),R(2),R(3),R(4),R(5),R(6),R(7),
 		R(8),R(9),R(10),R(11),R(12),R(13),R(14),R(15),
 		R(16),R(17),R(18),R(19),R(20),R(21),R(22),R(23),

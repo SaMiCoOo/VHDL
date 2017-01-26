@@ -42,47 +42,45 @@ begin
 	m: mux port map(smux,aluOut,adderOut,dataOut);
 	
 	process( control,dataOne,dataTwo )
+	variable temp : std_logic_vector(31 downto 0);
 	begin
 		case( control ) is
-			when "0010" => --Add
+			when "0010" =>
 				smux <= '1';
-				if (unsigned(dataOne)+unsigned(dataTwo) = 0) or (unsigned(dataOne)+unsigned(dataTwo) > 1) then
-					Z <= '1';
-					else
-					Z<='0';
-				end if ;
-			when "0110" => --Sub
+				temp:= adderOut;
+			when "0110" =>
 				smux <= '1';
-				if dataOne = dataTwo then
-					Z <= '1';
-					else
-					Z<='0';
-				end if ;
-			when "0001" => --rlc
+				temp:= adderOut;
+			when "0001" =>
 				smux <= '0';
-				if dataOne(30 downto 0)&dataOne(31) = Zero then
-					Z<='1';
-				else
-					Z<='0';
-				end if ;
+				temp:= dataOne(30 downto 0)&dataOne(31);
 				aluOut <= dataOne(30 downto 0)&dataOne(31);
-			when "1000" => --rrc
+			when "1000" =>
 				smux <= '0';
-				if dataOne(0)&dataOne(31 downto 1) = Zero then
-					Z<='1';
-				else
-					Z<='0';
-				end if ;
+				temp:= dataOne(0)&dataOne(31 downto 1);
 				aluOut <= dataOne(0)&dataOne(31 downto 1);
-			when "0000" => -- nand
+			when "0000" =>
 				smux <= '0';
+				temp:= dataOne nand dataTwo; 
 				aluOut <= dataOne nand dataTwo; 
 		
 			when others =>
 				smux<='0';
+				temp := Zero;
 				aluOut <= Zero;
 		
 		end case ;
+
+		if temp = Zero then
+			Z<='1';
+			N<='0';
+		elsif temp(31) = '1' then
+			Z<='0';
+			N<='1';
+		else
+			Z<='0';
+			N<='0';
+		end if ;
 	end process ; 
 
 end architecture ; -- arch
