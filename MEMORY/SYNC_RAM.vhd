@@ -16,7 +16,6 @@ architecture RTL of sync_ram is
 
    type ram_type is array (0 to 1023) of std_logic_vector(31 downto 0);
    signal ram : ram_type;
-   signal latched_address : std_logic_vector(31 downto 0);
 
 begin
 
@@ -27,10 +26,13 @@ begin
       if MemWrite = '1' then
         ram(to_integer(unsigned(Address))) <= WriteData;
       end if;
-      latched_address <= Address;
     end if;
+    if unsigned(Address) < 1024 then
+      ReadData <= ram(to_integer(unsigned(Address)));
+      else
+      ReadData <= (others=>'0');
+    end if ;
   end process RamProc;
-
-  ReadData <= ram(to_integer(unsigned(latched_address)));
+  
 
 end architecture RTL;
